@@ -1,7 +1,8 @@
 export interface Client {
+  id: string;
   name: string;
-  total_visits: number;
-  ponits: number;
+  total_vists: number;
+  points: number;
 }
 
 export interface User {
