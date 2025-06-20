@@ -24,6 +24,7 @@ export const authApi = Api.injectEndpoints({
         method: "POST",
         body: newClient,
       }),
+      invalidatesTags: ["clients"],
     }),
 
     updateClient: builder.mutation<

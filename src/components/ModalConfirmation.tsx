@@ -1,5 +1,3 @@
-// components/DeleteClientModal.tsx
-
 "use client";
 
 import {
