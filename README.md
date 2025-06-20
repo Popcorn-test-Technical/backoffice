@@ -29,19 +29,19 @@ A simple web-based loyalty management backoffice built with **Next.js**, **Mater
 
 ### Login Page
 
-![Login Page](./public/screenshots/login.png)
+![Login Page](./public/login.png)
 
 ### Clients List Page
 
-![Clients Page](./public/screenshots/clients-list.png)
+![Clients Page](./public/clients-list.png)
 
 ### Add / Edit Client Modal
 
-![Client Modal](./public/screenshots/client-modal.png)
+![Client Modal](./public/client-modal.png)
 
 ### Delete Confirmation Modal
 
-![Delete Modal](./public/screenshots/delete-modal.png)
+![Delete Modal](./public/delete-modal.png)
 
 ---
 
