@@ -7,6 +7,7 @@ import {
   DialogContentText,
   DialogActions,
   Button,
+  Divider,
 } from "@mui/material";
 
 interface DeleteClientModalProps {
@@ -23,19 +24,48 @@ export default function DeleteClientModal({
   onConfirm,
 }: DeleteClientModalProps) {
   return (
-    <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Delete Client</DialogTitle>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      PaperProps={{
+        sx: {
+          backgroundColor: "#111827", // any color you want
+          borderRadius: 3, // optional styling
+        },
+      }}
+    >
+      <DialogTitle color="white">Delete Client</DialogTitle>
+      <Divider color="#374151" />
       <DialogContent>
-        <DialogContentText>
+        <DialogContentText color="white">
           Are you sure you want to delete <strong>{clientName}</strong>? This
           action cannot be undone.
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="primary">
+        <Button
+          onClick={onClose}
+          sx={{
+            color: "white",
+          }}
+          color="primary"
+        >
           Cancel
         </Button>
-        <Button onClick={onConfirm} color="error" variant="contained">
+        <Button
+          onClick={onConfirm}
+          color="error"
+          sx={{
+            color: "white",
+            borderColor: "#374151",
+            background: "black",
+            "&:hover": {
+              borderColor: "#4b5563",
+              backgroundColor: "#374151",
+            },
+          }}
+          variant="contained"
+        >
           Delete
         </Button>
       </DialogActions>

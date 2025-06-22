@@ -1,150 +1,60 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  IconButton,
-  Container,
-  Button,
-} from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import {
-  useAddClientMutation,
-  useDeleteClientMutation,
-  useGetAllClientsQuery,
-  useUpdateClientMutation,
-} from "@/store/clients/clientsApi";
-import { Client } from "@/types";
+import { Box, Container } from "@mui/material";
+import ClientsTable from "@/components/ClientsTable/ClientsTable";
+import ClientsSearchAndActions from "@/components/ClientsSearchAndActions/ClientsSearchAndActions";
 import DeleteClientModal from "@/components/ModalConfirmation";
 import ClientFormModal from "@/components/ClientFormModal";
+import { useClientManagement } from "@/hooks/useClientManagement";
 
 export default function ClientsPage() {
-  const [openModal, setOpenModal] = useState(false);
-  const [clientToDelete, setClientToDelete] = useState<Client | null>(null);
-
-  const [formMode, setFormMode] = useState<"add" | "edit">("add");
-  const [formClient, setFormClient] = useState<Client | null>(null);
-  const [openForm, setOpenForm] = useState(false);
-
-  const { data: clients } = useGetAllClientsQuery();
-  const [deleteClient, result] = useDeleteClientMutation();
-  const [updateClient, updateResult] = useUpdateClientMutation();
-  const [addClient, addResult] = useAddClientMutation();
-
-  const handleAddClient = () => {
-    setFormMode("add");
-    setFormClient(null);
-    setOpenForm(true);
-  };
-
-  const handleEditClient = (client: Client) => {
-    setFormMode("edit");
-    setFormClient(client);
-    setOpenForm(true);
-  };
-
-  const handleDeleteClick = (client: Client) => {
-    setClientToDelete(client);
-    setOpenModal(true);
-  };
-
-  const confirmDelete = async () => {
-    if (clientToDelete) {
-      deleteClient(clientToDelete.id);
-      setOpenModal(false);
-    }
-  };
-
-  const handleFormSubmit = (data: {
-    id?: string;
-    name: string;
-    points: number;
-    visits: number;
-  }) => {
-    if (formMode === "add") {
-      addClient(data);
-    } else {
-      if (formClient?.id)
-        updateClient({
-          id: formClient.id,
-          data,
-        });
-    }
-    setFormClient(null);
-    setOpenForm(false);
-  };
+  const {
+    openModal,
+    clientToDelete,
+    selectedRows,
+    formMode,
+    formClient,
+    openForm,
+    searchValue,
+    clients,
+    handleAddClient,
+    handleEditClient,
+    handleDeleteClick,
+    confirmDelete,
+    handleFormSubmit,
+    handleSelectRow,
+    handleSelectAll,
+    setOpenModal,
+    setOpenForm,
+    setSearchValue,
+  } = useClientManagement();
 
   return (
-    <>
-      <Container maxWidth="lg" className="mt-10">
-        <div className="w-full justify-end flex mb-5">
-          <Button variant="contained" color="primary" onClick={handleAddClient}>
-            Add New Client
-          </Button>
-        </div>
+    <Box
+      sx={{
+        backgroundColor: "black",
+        minHeight: "100vh",
+        color: "white",
+        p: 3,
+      }}
+    >
+      <Container maxWidth="xl">
+        <ClientsSearchAndActions
+          onAddClient={handleAddClient}
+          searchValue={searchValue}
+          onSearchChange={setSearchValue}
+          onDeleteClients={() => setOpenModal(true)}
+          isSelectedRow={selectedRows.length > 0}
+        />
 
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead className="bg-gray-100">
-              <TableRow>
-                <TableCell>
-                  <strong>ID</strong>
-                </TableCell>
-                <TableCell>
-                  <strong>Name</strong>
-                </TableCell>
-                <TableCell>
-                  <strong>Points</strong>
-                </TableCell>
-                <TableCell>
-                  <strong>Total Visits</strong>
-                </TableCell>
-                <TableCell>
-                  <strong>Actions</strong>
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {clients &&
-                clients.map((client: Client) => (
-                  <TableRow key={client.id}>
-                    <TableCell>{client.id}</TableCell>
-                    <TableCell>{client.name}</TableCell>
-                    <TableCell>{client.points}</TableCell>
-                    <TableCell>{client.total_vists}</TableCell>
-                    <TableCell>
-                      <IconButton
-                        color="primary"
-                        onClick={() => handleEditClient(client)}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton
-                        color="error"
-                        onClick={() => handleDeleteClick(client)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              {(!clients || clients.length === 0) && (
-                <TableRow>
-                  <TableCell colSpan={5} align="center">
-                    No clients found.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <ClientsTable
+          clients={clients}
+          selectedRows={selectedRows}
+          onSelectRow={handleSelectRow}
+          onSelectAll={handleSelectAll}
+          onEditClient={handleEditClient}
+          onDeleteClient={handleDeleteClick}
+        />
       </Container>
 
       <DeleteClientModal
@@ -153,6 +63,7 @@ export default function ClientsPage() {
         onClose={() => setOpenModal(false)}
         onConfirm={confirmDelete}
       />
+
       <ClientFormModal
         mode={formMode}
         open={openForm}
@@ -160,6 +71,6 @@ export default function ClientsPage() {
         onSubmit={handleFormSubmit}
         initialData={formClient}
       />
-    </>
+    </Box>
   );
 }
